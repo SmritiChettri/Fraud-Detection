@@ -1,0 +1,28 @@
+# Virtual Environment
+.venv/
+venv/
+ENV/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# MLflow & Local Training Artifacts
+mlruns/
+.mlruns/
+
+# Large Datasets (Never commit large raw data to GitHub)
+data/*.csv
+data/*.parquet
+
+# Model Artifacts (Track via MLflow/DVC instead of raw git if large)
+# Keep only if lightweight (<100MB)
+models/*.joblib
+
+# OS & IDE Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
