@@ -5,7 +5,7 @@ import joblib
 import pandas as pd
 from contextlib import asynccontextmanager
 from fastapi import FastAPI,HTTPException
-from api.schemas import TransactionPayLoad, PredictionResponse
+from app.schemas import TransactionPayload, PredictionResponse
 
 model = None
 MODEL_PATH = os.path.join("models", "fraud_model.joblib")
@@ -24,25 +24,29 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the Fraud Detection API. Visit /docs to use the API."}
+
 @app.get("/health")
 def health_check():
     return{"status": "healthy", "model_loaded": model is not None}
 
 @app.post("/predict", response_model=PredictionResponse)
-def predict(payload: TransactionPayLoad):
+def predict(payload: TransactionPayload):
     if model is None:
         raise HTTPException(status_code=503, detail="Model artifact is ininitialized.")
 
-    data_dict = pay;oad.model_dump()
+    data_dict = payload.model_dump()
     ordered_cols = ["Time"] +[f"V{i}" for i in range(1, 29)] + ["Amount"]
-    imput_sf = pd.DataFrame([dat_dict])[ordered_cols]
+    input_df = pd.DataFrame([data_dict])[ordered_cols]
 
     prob = float(model.predict_proba(input_df)[0][1])
     is_fraud = prob >=0.50
 
-    return predictionResponse(
+    return PredictionResponse(
         is_fraud=is_fraud,
-        fraud_probability=rround(prob, 4),
+        fraud_probability=round(prob, 4),
         decision="BLOCK" if is_fraud else "APPROVE",
         risk_level="HIGH" if prob > 0.75 else "MEDIUM" if prob > 0.35 else "LOW"
 
