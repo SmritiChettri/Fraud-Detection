@@ -74,3 +74,17 @@ def predict_batch(payloads: List[TransactionPayload]):
             )
         )
     return responses
+
+@app.get("/")
+def root():
+    return {
+        "service": "FraudGuard AI Scoring Engine",
+        "version": "1.0.0",
+        "status": "online",
+        "endpoints": {
+            "documentation": "/docs",
+            "health_check": "/health",
+            "prediction": "/predict"
+        },
+        "model": "LightGBM Classifier (Cost-Sensitive Imbalanced Tuning)"
+    }
