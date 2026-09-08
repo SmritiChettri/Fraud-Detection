@@ -17,12 +17,10 @@ mlruns/
 data/*.csv
 data/*.parquet
 
-# Model Artifacts (Track via MLflow/DVC instead of raw git if large)
-# Keep only if lightweight (<100MB)
-models/*.joblib
-
 # OS & IDE Files
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
+
+ monitoring/reports/*.html
