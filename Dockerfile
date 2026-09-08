@@ -1,10 +1,12 @@
 FROM python:3.11-slim
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app
 
 WORKDIR /app
 
-# Install system dependencies needed by LightGBM
+# Install system dependencies required by LightGBM
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libgomp1 \
     && rm -rf /var/lib/apt/lists/*
@@ -12,8 +14,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY app/ amopp/
-COPY models/ models/
+# Copy source code and models
+COPY app/ /app/app/
+COPY models/ /app/models/
 
 RUN useradd -m appuser && chown -R appuser /app
 USER appuser
